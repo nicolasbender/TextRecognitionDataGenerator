@@ -2,6 +2,9 @@
 
 A synthetic data generator for text recognition
 
+## OUR CLI COMMAND
+trdg -c 4 -rs -let -num -w 1 -e png -k 15 -rk -obb 1 -m 0 -d 1 -b 0 -wd 160 -cs  -al 1 -ft trdg/fonts/latin/DroidSansMono-V4.ttf -f 60
+
 ## What is it for?
 
 Generating text image samples to train an OCR software. Now supporting non-latin text! For a more thorough tutorial see [the official documentation](https://textrecognitiondatagenerator.readthedocs.io/en/latest/index.html).
