@@ -1,5 +1,6 @@
 import os
 import random as rnd
+import trdg.utils as utils
 
 from PIL import Image, ImageFilter, ImageStat
 
@@ -50,6 +51,7 @@ class FakeTextDataGenerator(object):
         output_mask: bool,
         word_split: bool,
         image_dir: str,
+        labels,
         stroke_width: int = 0,
         stroke_fill: str = "#282828",
         image_mode: str = "RGB",
@@ -130,6 +132,7 @@ class FakeTextDataGenerator(object):
                 distorted_img.size[0]
                 * (float(size - vertical_margin) / float(distorted_img.size[1]))
             )
+            new_width = width
             resized_img = distorted_img.resize(
                 (new_width, size - vertical_margin), Image.Resampling.LANCZOS
             )
@@ -251,16 +254,17 @@ class FakeTextDataGenerator(object):
         # We remove spaces if space_width == 0
         if space_width == 0:
             text = text.replace(" ", "")
-        if name_format == 0:
-            name = "{}_{}".format(text, str(index))
-        elif name_format == 1:
-            name = "{}_{}".format(str(index), text)
-        elif name_format == 2:
-            name = str(index)
-        else:
-            print("{} is not a valid name format. Using default.".format(name_format))
-            name = "{}_{}".format(text, str(index))
+        #if name_format == 0:
+            #name = "{}_{}".format(text, str(index))
+        #elif name_format == 1:
+            #name = "{}_{}".format(str(index), text)
+        #elif name_format == 2:
+        #    name = str(index)
+        #else:
+        #    print("{} is not a valid name format. Using default.".format(name_format))
+            #name = "{}_{}".format(text, str(index))
 
+        name = text
         name = make_filename_valid(name, allow_unicode=True)
         image_name = "{}.{}".format(name, extension)
         mask_name = "{}_mask.png".format(name)
@@ -269,14 +273,20 @@ class FakeTextDataGenerator(object):
 
         # Save the image
         if out_dir is not None:
+            #utils.draw_bounding_boxes(final_image, mask_to_bboxes(final_mask), "red")
             final_image.save(os.path.join(out_dir, image_name))
             if output_mask == 1:
                 final_mask.save(os.path.join(out_dir, mask_name))
             if output_bboxes == 1:
                 bboxes = mask_to_bboxes(final_mask)
-                with open(os.path.join(out_dir, box_name), "w") as f:
-                    for bbox in bboxes:
-                        f.write(" ".join([str(v) for v in bbox]) + "\n")
+                #with open(os.path.join(out_dir, box_name), "w") as f:
+                #    for bbox in bboxes:
+                #        f.write(" ".join([str(v) for v in bbox]) + "\n")
+                labels[image_name.replace(".png", "")] = {
+                            "boxes": [[int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])] for bbox in bboxes],
+                            "labels": [*(image_name.replace(".png", ""))],
+                        }
+                return labels
             if output_bboxes == 2:
                 bboxes = mask_to_bboxes(final_mask, tess=True)
                 with open(os.path.join(out_dir, tess_box_name), "w") as f:

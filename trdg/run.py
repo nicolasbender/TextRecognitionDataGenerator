@@ -2,9 +2,11 @@ import argparse
 import errno
 import os
 import sys
+import json
+import random
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-
+LABELFILE = 'out/labels.json'
 import random as rnd
 import string
 import sys
@@ -434,6 +436,12 @@ def main():
 
     string_count = len(strings)
 
+    if os.path.exists(LABELFILE):
+        with open(LABELFILE, "r+") as _file:
+            labels = json.load(_file)
+    else:
+        labels = {}
+    '''
     p = Pool(args.thread_count)
     for _ in tqdm(
         p.imap_unordered(
@@ -473,8 +481,50 @@ def main():
         ),
         total=args.count,
     ):
-        pass
+    pass
     p.terminate()
+    '''
+
+    for i in range(string_count):
+        text_color = "#%06x" % random.randint(0, 0x979797)
+        background = random.randint(0,2)
+        character_spacing = random.randint(-10,-7)
+        labels = FakeTextDataGenerator.generate(
+                i,
+                strings[i],
+                fonts[rnd.randrange(0, len(fonts))],
+                args.output_dir,
+                args.format,
+                args.extension,
+                args.skew_angle,
+                args.random_skew,
+                args.blur,
+                args.random_blur,
+                background,
+                args.distorsion,
+                args.distorsion_orientation,
+                args.handwritten,
+                args.name_format,
+                args.width,
+                args.alignment,
+                text_color,
+                args.orientation,
+                args.space_width,
+                character_spacing,
+                args.margins,
+                args.fit,
+                args.output_mask,
+                args.word_split,
+                args.image_dir,
+                labels,
+                args.stroke_width,
+                args.stroke_fill,
+                args.image_mode,
+                args.output_bboxes,
+        )
+
+    with open(LABELFILE, "w+") as _file:
+        json.dump(labels, _file, indent=2)
 
     if args.name_format == 2:
         # Create file with filename-to-label connections
