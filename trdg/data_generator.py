@@ -267,7 +267,7 @@ class FakeTextDataGenerator(object):
         name = text
         name = make_filename_valid(name, allow_unicode=True)
         image_name = "{}.{}".format(name, extension)
-        mask_name = "{}_mask.png".format(name)
+        mask_name = "{}.png".format(name)
         box_name = "{}_boxes.txt".format(name)
         tess_box_name = "{}.box".format(name)
 
@@ -276,7 +276,7 @@ class FakeTextDataGenerator(object):
             #utils.draw_bounding_boxes(final_image, mask_to_bboxes(final_mask), "red")
             final_image.save(os.path.join(out_dir, image_name))
             if output_mask == 1:
-                final_mask.save(os.path.join(out_dir, mask_name))
+                final_mask.save(os.path.join('mask/', mask_name))
             if output_bboxes == 1:
                 bboxes = mask_to_bboxes(final_mask)
                 #with open(os.path.join(out_dir, box_name), "w") as f:

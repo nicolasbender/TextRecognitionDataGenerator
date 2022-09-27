@@ -145,7 +145,7 @@ def _generate_horizontal_text(
         txt_mask_draw.text(
             (sum(piece_widths[0:i]) + i * character_spacing * int(not word_split), 0),
             p,
-            fill=((i + 1) // (255 * 255), (i + 1) // 255, (i + 1) % 255),
+            fill=((i + 1)*200 // (255 * 255), (i + 1)*200 // 255, ((i + 1)*200 % 255)),
             font=image_font,
             stroke_width=stroke_width,
             stroke_fill=stroke_fill,
@@ -215,7 +215,7 @@ def _generate_vertical_text(
         txt_mask_draw.text(
             (0, sum(char_heights[0:i]) + i * character_spacing),
             c,
-            fill=((i + 1) // (255 * 255), (i + 1) // 255, (i + 1) % 255),
+            fill=((i + 1) // (255 * 255), (i + 1) // 255, ((i + 1) % 255) *20),
             font=image_font,
             stroke_width=stroke_width,
             stroke_fill=stroke_fill,
